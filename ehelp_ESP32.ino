@@ -1,14 +1,3 @@
-
-
-/* To DO
--- Update servo library for none esp 32
--- Update anaolg in level
--  Check signal quality for switch may need pull up resistor.
--- update pins
--- Remove newmap function when going with MO board
--- Tune Throttle for useful range
-*/
-
 //****************************************************
 //** DEFINE KEY SETTINGS, INSTANCES AND PINS HERE ****
 //****************************************************
@@ -16,7 +5,7 @@
 #include <ESP32_Servo.h>  // https://www.youtube.com/watch?v=_WqfNyE_pt8
 Servo ESC;  // ESC
 
-int ESC_pin = 13;  // Working on ESP32. Additional Working pins for Servo out 14, 15 on ESP32
+int ESC_pin = 13;  // Working on ESP32 also works on pins 14, 15
 int ThrottlePin = A0;
 int Power_Switch = A1; 
 float Vs = 3.3;  //This is the supply voltage of board
@@ -42,17 +31,17 @@ void setup() {
 //****************************************************
 
 void loop() {
-  Switch_val = analogRead(Power_Switch);
+  Switch_val = analogRead(Power_Switch); // This the hard switch to cut the power regardless of the mouth throttle mouth slider
   //Serial.println(Switch_val);
   
   if (Switch_val < 4095) {
       ThrottleMS = 1000;
-      ESC.writeMicroseconds(ThrottleMS);    // uses throttle from controller
+      ESC.writeMicroseconds(ThrottleMS);    // Set Throttle to zero
   } else {
-      ThrottleMS = New_Map(analogRead(ThrottlePin), 400, 2800, 1110, 2000);  // 1110 was used as low in Open PPG
-      if (ThrottleMS > 2000) { ThrottleMS = 2000;}
-      if (ThrottleMS < 1110) { ThrottleMS = 1110;}
-      ESC.writeMicroseconds(ThrottleMS);    // uses throttle from controller
+      ThrottleMS = New_Map(analogRead(ThrottlePin), 400, 2800, 1110, 2000);  // 1110 is bottom end
+      if (ThrottleMS > 2000) { ThrottleMS = 2000;} //  Set limits for
+      if (ThrottleMS < 1110) { ThrottleMS = 1110;} //  Set limits for
+      ESC.writeMicroseconds(ThrottleMS);    // uses throttle from mouth controller
   }// End if else
   
   //Serial.print("Raw Pin in: "); Serial.print(analogRead(ThrottlePin)); Serial.print(",  ThrottleMS: "); Serial.println(ThrottleMS); 
