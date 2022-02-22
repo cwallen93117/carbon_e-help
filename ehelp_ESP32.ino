@@ -31,21 +31,21 @@ void setup() {
 //****************************************************
 
 void loop() {
-  Switch_val = analogRead(Power_Switch); // This the hard switch to cut the power regardless of the mouth throttle mouth slider
+  Switch_val = analogRead(Power_Switch); // This is the hard switch to cut the power regardless of the mouth throttle mouth slider
   //Serial.println(Switch_val);
   
-  if (Switch_val < 4095) {
+  if (Switch_val < 4095) {  // If switch is less than 4095 which is the max analog value for an ESP32 then set throttle to 0, i.e. 1000
       ThrottleMS = 1000;
       ESC.writeMicroseconds(ThrottleMS);    // Set Throttle to zero
   } else {
-      ThrottleMS = New_Map(analogRead(ThrottlePin), 400, 2800, 1110, 2000);  // 1110 is bottom end
-      if (ThrottleMS > 2000) { ThrottleMS = 2000;} //  Set limits for
-      if (ThrottleMS < 1110) { ThrottleMS = 1110;} //  Set limits for
+      ThrottleMS = New_Map(analogRead(ThrottlePin), 400, 2800, 1110, 2000);  // 400 is the analog in value for no throttle and 2800 is the max throttle, this is remapped to 1110  bottom end and 2000 max 
+      if (ThrottleMS > 2000) { ThrottleMS = 2000;} //  Set limits for Max throttle
+      if (ThrottleMS < 1110) { ThrottleMS = 1110;} //  Set limits for Min throttle
       ESC.writeMicroseconds(ThrottleMS);    // uses throttle from mouth controller
   }// End if else
   
   //Serial.print("Raw Pin in: "); Serial.print(analogRead(ThrottlePin)); Serial.print(",  ThrottleMS: "); Serial.println(ThrottleMS); 
-  //Serial.print("throttle: "); Serial.println(ThrottleMS);  // Debug line
+  //Serial.print("throttle: "); Serial.println(ThrottleMS);  // Debug line so you can read on computer
   
   } // End Loop
 
